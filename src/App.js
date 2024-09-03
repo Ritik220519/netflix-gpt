@@ -1,9 +1,10 @@
 
 import './App.css';
+import Body from './component/Body';
 
 function App() {
   return (
-  <p className='netflix bg-slate-800'>netflix</p>
+  <Body/>
   );
 }
 
