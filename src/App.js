@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className="bg-slate-300 text-red-500 text-center">
      start Netflix-gpt App
     </div>
   );
