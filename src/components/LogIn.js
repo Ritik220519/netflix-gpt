@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Header from "./Header";
+import { checkValidations } from "../utils/validate";
+
 const LogIn = () => {
+
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage , setErrorMessage] = useState(null)
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleValidateButton = () => {
+    // validation
+    // error message
+    console.log(email.current.value);
+    console.log(password.current.value);
+    const message = checkValidations(
+      email.current.value,
+      password.current.value
+    );
+    setErrorMessage(message);
+  };
 
   const handleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
@@ -16,11 +34,15 @@ const LogIn = () => {
         />
       </div>
 
-      <form className=" absolute w-3/12 my-36 p-12 mx-auto right-0 left-0 bg-black text-white rounded-2xl bg-opacity-85">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className=" absolute w-3/12 my-36 p-12 mx-auto right-0 left-0 bg-black text-white rounded-2xl bg-opacity-85"
+      >
         <p className=" text-3xl font-bold py-4 m-2 ">
           {isSignInForm ? "sign In" : "sign Up"}
         </p>
         <input
+          ref={email}
           type="text"
           placeholder="Email"
           className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
@@ -33,24 +55,31 @@ const LogIn = () => {
           />
         )}
         <input
+          ref={password}
           type="text"
           placeholder="Password"
           className=" my-2 p-4 w-full bg-slate-700 text-white rounded-md"
         />
-          {!isSignInForm && (
+        {!isSignInForm && (
           <input
             type="text"
             placeholder="confirm password"
             className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
           />
         )}
-        <button className="bg-rose-600 my-4 p-3 w-full  rounded-md">
+        <p className="text-rose-600 font-medium m-2">{errorMessage}</p>
+        <button
+          className="bg-rose-500 my-4 p-3 w-full  rounded-md"
+          onClick={() => handleValidateButton()}
+        >
           {isSignInForm ? "Sign In" : "sign Up"}
         </button>
         <span className="m-2 py-4">
-         {" "}
+          {" "}
           <span className="cursor-pointer" onClick={() => handleSignInForm()}>
-            {isSignInForm ? " New to Netflix? Sign up Now" : "Already a member ? Sign In Now"}
+            {isSignInForm
+              ? " New to Netflix? Sign up Now"
+              : "Already a member ? Sign In Now"}
           </span>{" "}
         </span>
       </form>
