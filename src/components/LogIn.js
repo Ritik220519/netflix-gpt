@@ -1,5 +1,11 @@
+import { useState } from "react";
 import Header from "./Header";
 const LogIn = () => {
+  const [isSignInForm, setIsSignInForm] = useState(true);
+
+  const handleSignInForm = () => {
+    setIsSignInForm(!isSignInForm);
+  };
   return (
     <div>
       <Header />
@@ -9,16 +15,46 @@ const LogIn = () => {
           alt="netflix-bg-img"
         />
       </div>
-     
-        <form className=" absolute w-3/12 my-36 p-12 mx-auto right-0 left-0 bg-black text-white rounded-2xl bg-opacity-85" >
-            <p className=" text-3xl font-bold py-4 m-2 ">Sign In</p>
-            <input type="text" placeholder="Email or Mobile Number" className="my-2 p-4 w-full bg-slate-700 text-white rounded-md" />
-            <input type="text" placeholder="Password" className=" my-2 p-4 w-full bg-slate-700 text-white rounded-md" />
-            <button className="bg-rose-600 my-4 p-3 w-full  rounded-md">Sign In</button>
-        </form>
-      </div>
-      
-   
+
+      <form className=" absolute w-3/12 my-36 p-12 mx-auto right-0 left-0 bg-black text-white rounded-2xl bg-opacity-85">
+        <p className=" text-3xl font-bold py-4 m-2 ">
+          {isSignInForm ? "sign In" : "sign Up"}
+        </p>
+        <input
+          type="text"
+          placeholder="Email"
+          className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
+        />
+        {!isSignInForm && (
+          <input
+            type="text"
+            placeholder="Full Name"
+            className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
+          />
+        )}
+        <input
+          type="text"
+          placeholder="Password"
+          className=" my-2 p-4 w-full bg-slate-700 text-white rounded-md"
+        />
+          {!isSignInForm && (
+          <input
+            type="text"
+            placeholder="confirm password"
+            className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
+          />
+        )}
+        <button className="bg-rose-600 my-4 p-3 w-full  rounded-md">
+          {isSignInForm ? "Sign In" : "sign Up"}
+        </button>
+        <span className="m-2 py-4">
+         {" "}
+          <span className="cursor-pointer" onClick={() => handleSignInForm()}>
+            {isSignInForm ? " New to Netflix? Sign up Now" : "Already a member ? Sign In Now"}
+          </span>{" "}
+        </span>
+      </form>
+    </div>
   );
 };
 
