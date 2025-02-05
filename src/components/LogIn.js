@@ -1,18 +1,26 @@
 import { useState, useRef } from "react";
 import Header from "./Header";
 import { checkValidations } from "../utils/validate";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import {auth} from "../utils/firebase"
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const LogIn = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleValidateButton = () => {
-    console.log(email.current.value);
-    console.log(password.current.value);
     const message = checkValidations(
       email.current.value,
       password.current.value
@@ -33,7 +41,22 @@ const LogIn = () => {
           // Signed up
           const user = userCredential.user;
           console.log(user);
-          // ...
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "https://example.com/jane-q-user/profile.jpg",
+          })
+            .then(() => {
+              const { uid, displayName, email } = auth.currentUser;
+              dispatch(
+                addUser({ uid: uid, displayName: displayName, email: email })
+              );
+              navigate("/browse");
+              // ...
+            })
+            .catch((error) => {
+              // An error occurred
+              setErrorMessage(error.message);
+            });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -43,6 +66,25 @@ const LogIn = () => {
         });
     } else {
       // sign in logic
+
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          setErrorMessage(errorCode + " : " + errorMessage);
+        });
     }
   };
 
@@ -51,7 +93,7 @@ const LogIn = () => {
   };
   return (
     <div>
-      <Header />
+      <Header isSignInForm={isSignInForm} />
       <div className="absolute">
         <img
           src="https://assets.nflxext.com/ffe/siteui/vlv3/7a8c0067-a424-4e04-85f8-9e25a49a86ed/web/IN-en-20250120-TRIFECTA-perspective_860a95da-c386-446e-af83-fef8ddd80803_large.jpg"
@@ -66,32 +108,28 @@ const LogIn = () => {
         <p className=" text-3xl font-bold py-4 m-2 ">
           {isSignInForm ? "sign In" : "sign Up"}
         </p>
+        {!isSignInForm && (
+          <input
+            ref={name}
+            type="text"
+            placeholder="Name"
+            className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
+          />
+        )}
         <input
           ref={email}
           type="text"
           placeholder="Email"
           className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
         />
-        {!isSignInForm && (
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
-          />
-        )}
+
         <input
           ref={password}
           type="text"
           placeholder="Password"
           className=" my-2 p-4 w-full bg-slate-700 text-white rounded-md"
         />
-        {!isSignInForm && (
-          <input
-            type="text"
-            placeholder="confirm password"
-            className="my-2 p-4 w-full bg-slate-700 text-white rounded-md"
-          />
-        )}
+
         <p className="text-rose-600 font-medium m-2">{errorMessage}</p>
         <button
           className="bg-rose-500 my-4 p-3 w-full  rounded-md"
