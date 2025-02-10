@@ -15,6 +15,9 @@
  - Implimented Sign out 
  - Update profile 
  - Movies Fetch from TMDB
+ - bug fix - signUp user display name updated
+ - Bug fix - if the user is not login redirect browse to login page and vice-versa
+ - unSubscribe the onAuthStateChange callback
  
 
 
